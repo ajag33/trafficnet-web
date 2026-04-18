@@ -1,5 +1,5 @@
-# Nombre del proceso de despliegue igual al de Toshiko pero para Trafficnet
-name: Despliegue Automático Trafficnet
+# Nombre del proceso de despliegue
+name: Despliegue Automático Toshiko
 
 on:
   push:
@@ -8,18 +8,39 @@ on:
 
 jobs:
   web-deploy:
-    name: 🚀 Sincronizar con Hosting Trafficnet
+    name: 🚀 Sincronizar con Hosting Toshiko
     runs-on: ubuntu-latest
+    
     steps:
-      - name: 📂 Obteniendo el código fuente
+      - name: 🚚 Obteniendo el código fuente
         uses: actions/checkout@v4
 
       - name: 📤 Subiendo archivos vía FTP (Puerto 21)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          # Usamos los mismos nombres de Secrets que en Toshiko
+          # Usamos los Secrets configurados
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # Ruta de destino en tu hosting
+          
+          # Configuración basada en tu imagen de cPanel
           server-dir: public_html/
+          protocol: ftp
+          port: 21
+          
+          # Desactivamos SSL estricto para evitar bloqueos por certificados temporales
+          ftp-ssl: false
+          
+          # Aumentamos el tiempo de espera
+          timeout: 120000 
+          log-level: verbose
+          
+          # Seguridad: No borrar archivos existentes
+          dangerous-clean-slate: false
+          
+          # Carpetas que NO se suben
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            .github/workflows/main.yml
