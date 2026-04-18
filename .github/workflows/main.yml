@@ -1,5 +1,5 @@
 # Nombre del proceso de despliegue
-name: Despliegue Automático Toshiko
+name: Despliegue Automático Trafficnet
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   web-deploy:
-    name: 🚀 Sincronizar con Hosting Toshiko
+    name: 🚀 Sincronizar con Hosting Trafficnet
     runs-on: ubuntu-latest
     
     steps:
@@ -18,27 +18,27 @@ jobs:
       - name: 📤 Subiendo archivos vía FTP (Puerto 21)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          # Usamos los Secrets configurados
+          # Usamos los Secrets configurados en GitHub Settings
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           
-          # Configuración basada en tu imagen de cPanel
+          # Configuración de ruta y conexión
           server-dir: public_html/
           protocol: ftp
           port: 21
           
-          # Desactivamos SSL estricto para evitar bloqueos por certificados temporales
+          # Desactivamos SSL estricto para evitar bloqueos por certificados no válidos/temporales
           ftp-ssl: false
           
-          # Aumentamos el tiempo de espera
+          # Aumentamos el tiempo de espera para archivos pesados o conexiones lentas
           timeout: 120000 
           log-level: verbose
           
-          # Seguridad: No borrar archivos existentes
+          # Seguridad: No borrar archivos existentes en el servidor
           dangerous-clean-slate: false
           
-          # Carpetas que NO se suben
+          # Carpetas y archivos que NO deben subirse al servidor
           exclude: |
             **/.git*
             **/.git*/**
