@@ -1,0 +1,25 @@
+# Nombre del proceso de despliegue igual al de Toshiko pero para Trafficnet
+name: Despliegue Automático Trafficnet
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: 🚀 Sincronizar con Hosting Trafficnet
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📂 Obteniendo el código fuente
+        uses: actions/checkout@v4
+
+      - name: 📤 Subiendo archivos vía FTP (Puerto 21)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          # Usamos los mismos nombres de Secrets que en Toshiko
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Ruta de destino en tu hosting
+          server-dir: public_html/
